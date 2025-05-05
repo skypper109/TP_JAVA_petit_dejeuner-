@@ -23,7 +23,7 @@ public class GestionRotationJour {
             System.out.println("2.) Tapez 2 pour changer le jour de rotation");
             System.out.println("3.) Tapez 3 pour faire une nouvelle rotation");
             System.out.println("4.) Tapez 4 pour ajouter les jours Férier");
-            System.out.println("4.) Tapez 0 pour retourner a l'accueil");
+            System.out.println("5.) Tapez 0 pour retourner a l'accueil");
             System.out.print("Fait un choix : ");
             ch = sc.nextInt();
         }while (ch >3);

@@ -36,8 +36,7 @@ public class Main {
                     while (c) {
                         System.out.println("1.) Tapez 1 pour la gestion des agents");
                         System.out.println("2.) Tapez 2 pour la gestion de rotation et de jour");
-                        System.out.println("7.) Tapez 7 pour afficher les prochaines rotations");
-                        System.out.println("0.) Tapez 0 pour quitter");
+                        System.out.println("0.) Tapez 0 pour se deconnecter");
                         System.out.print("\nFaites un choix : ");
                         int choix = sc.nextInt();
 
@@ -49,14 +48,8 @@ public class Main {
                             case 2:
                                 new GestionRotationJour(admin);
                                 break;
-                            case 7:
-                                System.out.print("Combien de prochaines rotations voulez-vous afficher ? : ");
-                                int nombre = sc.nextInt();
-                                admin.afficherRotationsAvenir(nombre);
-                                break;
 
                             case 0:
-                                System.out.println("Déconnexion...");
                                 c = false;
                                 break;
 
@@ -69,6 +62,7 @@ public class Main {
                     choix = sc.next();
                     if (choix.equals("Oui") || choix.equals("O") || choix.equals("o") || choix.equals("oui")){
                         b=false;
+                        System.out.println("Déconnexion...");
                     }else {
                         c=true;
                     }
