@@ -56,4 +56,4 @@ java Main
 
 ---
 
-Développé avec ❤️ pour organiser la vie d'équipe.
+Développé avec ❤️ par les éléments du Groupe 3 ODK P5 pour organiser la vie d'équipe.
