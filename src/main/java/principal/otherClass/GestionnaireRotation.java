@@ -31,7 +31,7 @@ public class GestionnaireRotation {
     public Historique myHistorique(String nom){
         for (Historique hist: historique
              ) {
-            if (hist.getNomAgentPrevu() == nom){
+            if (hist.getNomAgentPrevu().equals(nom)){
                 return hist;
             }
         }
@@ -49,10 +49,25 @@ public class GestionnaireRotation {
         this.jourRotation = jourRotation;
     }
 
-    //Methode pour Ajouter un agent
-    public void ajouterAgent(Agent agent){
-        this.listeAgent.add(agent);
+    public boolean emailEstValide(String email) {
+        return email != null && email.contains("@") && email.contains(".");
     }
+    public boolean emailExisteDeja(String email) {
+        for (Agent agent : listeAgent) {
+            if (agent.getEmail().equalsIgnoreCase(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Methode pour Ajouter un agent
+    private int compteurId =1;
+    public void ajouterAgent(String nom, String email) {
+        Agent agent = new Agent(compteurId++, nom, email);
+        listeAgent.add(agent);
+    }
+
 
     public List<Agent> getListeAgent() {
         return listeAgent;
@@ -63,13 +78,13 @@ public class GestionnaireRotation {
     }
 
     //Methode pour retire un agent
-    public void retireAgent(String emailAgent){
-        //On a deux maniere de le faire
-        if (listeAgent.contains(emailAgent)){
-            listeAgent.remove(emailAgent);
-            System.out.println("L'agent Retire avec succès");
-        }else {
-            System.out.println("Pas d'Agent pour l'email : "+emailAgent);
+    public void retireAgent (String emailAgent) {
+        //Avec une fonction conditionnelle(Lambda) qui agit en supprimmant tout élément x qui vérifie la condition x -> ...
+        boolean retirer = listeAgent.removeIf(agent -> agent.getEmail().equalsIgnoreCase(emailAgent));
+        if (retirer) {
+            System.out.println("L'agent a été retiré avec succès.");
+        } else {
+            System.out.println("Aucun agent trouvé avec l'email : " + emailAgent);
         }
     }
     //Avec les surcharges pour le retrait des agents :
@@ -88,13 +103,19 @@ public class GestionnaireRotation {
                 + " ajouter aux jours feriés avec succès!!");
     }
 
-    //Pour methode pour signalerIndisponibilite des agents :
-    public void signalerIndisponibilite(int idAgent, LocalDate date){
-        for (Agent agent: listeAgent){
-            if (agent.getIdAgent() == idAgent){
-                agent.ajouterIndisponiblilite(date);
-                break;
-            }
+    //Methode pour afficher les jours feriers :
+    public void afficherJoursFeries() {
+        if (jourFerier.isEmpty()) {
+            System.out.println("Aucun jour férié enregistré.");
+            return;
+        }
+
+        System.out.println("\nListe des jours fériés enregistrés :");
+        List<LocalDate> feriesTries = new ArrayList<>(jourFerier);
+        Collections.sort(feriesTries);
+
+        for (LocalDate date : feriesTries) {
+            System.out.println("→ " + date);
         }
     }
 
@@ -210,14 +231,28 @@ public class GestionnaireRotation {
     }
 
     //Pour la methode afficherHistorique :
-    public void afficherHistorique(){
-        for (Historique detail : historique) {
-            System.out.println(detail.getDateRotation() + " - " + detail.getNomAgentPrevu()
-                    + " (" + detail.getStatut()
-                    + (detail.getNomRemplacant() != null ? ", remplacé par " + detail.getNomRemplacant() : "")
-                    + ")");
+    public void afficherHistorique() {
+        if (historique.isEmpty()) {
+            System.out.println(" Aucun historique disponible pour le moment.");
+            return;
+        }
+
+        System.out.println("\n HISTORIQUE DES ROTATIONS\n");
+        //On utilise des spécificateurs de format pour organiser les colonnes a l'affichage
+        // % debut du format; - aligner a gauche; 15 nombre de caractere; s le type de contenu
+        System.out.printf("%-15s | %-20s | %-15s | %-20s\n", " Date", " Agent Prévu", " Statut", " Remplaçant");
+        System.out.println("--------------------------------------------------------------------------------------");
+
+        for (Historique h : historique) {
+            String date = h.getDateRotation().toString();
+            String agent = h.getNomAgentPrevu();
+            String statut = h.getStatut();
+            String remplaçant = (h.getNomRemplacant() != null) ? h.getNomRemplacant() : "-";
+
+            System.out.printf("%-15s | %-20s | %-15s | %-20s\n", date, agent, statut, remplaçant);
         }
     }
+
 
     public void afficherDatesDeRotation() {
         if (historique.isEmpty()) {
@@ -228,16 +263,16 @@ public class GestionnaireRotation {
         // Créer une map pour regrouper les dates par agent
         Map<String, List<LocalDate>> rotationsParAgent = new HashMap<>();
 
-        for (Historique record : historique) {
-            String nom = record.getNomAgentPrevu();
+        for (Historique h: historique) {
+            String nom = h.getNomAgentPrevu();
             rotationsParAgent.putIfAbsent(nom, new ArrayList<>());
-            rotationsParAgent.get(nom).add(record.getDateRotation());
+            rotationsParAgent.get(nom).add(h.getDateRotation());
         }
 
         // Affichage propre
         System.out.println("Dates de rotation par agent :\n");
         for (Map.Entry<String, List<LocalDate>> entry : rotationsParAgent.entrySet()) {
-            System.out.println("*****" + entry.getKey() + " :");
+            System.out.println("***** " + entry.getKey() + " :");
             for (LocalDate date : entry.getValue()) {
                 System.out.println("   ---- " + date);
             }

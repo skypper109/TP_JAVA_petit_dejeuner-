@@ -19,40 +19,42 @@ public class GestionAgent {
         this.choix();
     }
     private void choix() {
-        int ch;
-        do {
-            System.out.println("\nMENU - Gestion des agents :");
+        int ch = -1;
+        while (ch != 0) {
+            System.out.println("\n--- MENU - Gestion des agents ---");
             System.out.println("1.) Ajouter un agent");
             System.out.println("2.) Lister les agents");
             System.out.println("3.) Retirer un agent");
             System.out.println("0.) Retour à l'accueil");
             System.out.print("Faites un choix : ");
+
+            while (!sc.hasNextInt()) {
+                System.out.print(" Saisie invalide. Entrez un nombre : ");
+                sc.next();  // vider la mauvaise saisie
+            }
             ch = sc.nextInt();
 
             switch (ch) {
-                case 0:
-                    System.out.println("Retour à l'accueil...");
-                    break;
-
                 case 1:
                     this.ajoutAgent();
                     break;
-
                 case 2:
                     this.listAgent();
                     break;
-
                 case 3:
                     System.out.print("Entrer l'email de l'agent à retirer : ");
                     String email = sc.next();
                     admin.retireAgent(email);
                     break;
-
+                case 0:
+                    System.out.println(" Retour à l'accueil...");
+                    break;
                 default:
                     System.out.println("Choix invalide. Veuillez réessayer.");
             }
-        } while (ch != 0);
+        }
     }
+
 
 
     private void menu(){
@@ -76,10 +78,12 @@ public class GestionAgent {
             System.out.print("Saisir le nom de l'agent " + (i + 1) + " : ");
             sc.nextLine();
             String nom = sc.nextLine();
-            System.out.print("Saisir l'email de l'agent " + (i + 1) + " : ");
-            String email = sc.next();
-            Agent agent = new Agent(i + 1, nom, email);  // ID = i+1
-            admin.ajouterAgent(agent);
+            String email;
+            do{
+                System.out.print("Saisir l'email de l'agent " + (i + 1) + " : ");
+                email = sc.next();
+            }while (!admin.emailEstValide(email) || admin.emailExisteDeja(email));
+            admin.ajouterAgent(nom,email);
         }
 
         System.out.println(nbAgent + (nbAgent > 1 ? " agents ont été ajoutés avec succès !" : " agent a été ajouté avec succès !"));

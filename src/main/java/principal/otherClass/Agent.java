@@ -61,16 +61,48 @@ public class Agent {
      public boolean estDisponible(LocalDate date){
         return !dateIndisponible.contains(date);
      }
-    public void voirTour(int id,GestionnaireRotation admin){
 
-        for (Agent agent:admin.getListeAgent()) {
 
-            if (agent.getIdAgent() == id){
-               List<Historique> hist =  new ArrayList<>();
-               hist.add(admin.myHistorique(agent.getNomAgent()));
-                System.out.println("Votre Prochain Tour est prevu pour le : "+hist.get(0).getDateRotation());
+    //Pour methode pour signalerIndisponibilite des agents :
+    public void signalerIndisponibilite(int idAgent, LocalDate date,GestionnaireRotation admin){
+        for (Agent agent: admin.getListeAgent()){
+            if (agent.getIdAgent() == idAgent){
+                agent.ajouterIndisponiblilite(date);
+                System.out.println("Indisponibilité ajoutée pour le " + date);
+                admin.planifieRotation(date);
+                break;
             }
         }
     }
+    public void voirTour(GestionnaireRotation admin) {
+        List<Historique> historique = admin.getHistorique();
+        boolean trouve = false;
+
+        System.out.println("\n📅 Vos dates de rotation prévues :");
+        for (Historique h : historique) {
+            if (h.getNomAgentPrevu().equals(this.nomAgent)) {
+                System.out.println("→ " + h.getDateRotation() + " (" + h.getStatut() + ")");
+                trouve = true;
+            }
+        }
+
+        if (!trouve) {
+            System.out.println("Aucune rotation prévue pour vous actuellement.");
+        }
+    }
+    public void rappelSiProcheTour(GestionnaireRotation admin) {
+        LocalDate dansDeuxJours = LocalDate.now().plusDays(2);
+
+        for (Historique h : admin.getHistorique()) {
+            if (h.getNomAgentPrevu().equals(this.nomAgent) && h.getDateRotation().equals(dansDeuxJours)) {
+                System.out.println("\nRappel : Vous êtes prévu pour le petit-déjeuner dans 2 jours (" + dansDeuxJours + ").");
+                return;
+            }
+        }
+
+        // Aucun rappel
+        System.out.println("Aucun rappel pour vous aujourd’hui.");
+    }
+
 
 }

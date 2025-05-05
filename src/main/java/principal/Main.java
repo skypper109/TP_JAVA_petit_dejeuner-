@@ -5,6 +5,7 @@ import principal.otherClass.GestionnaireRotation;
 import principal.otherClass.actions.GestionAgent;
 import principal.otherClass.actions.GestionRotationJour;
 
+import java.io.Console;
 import java.lang.reflect.Array;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -22,8 +23,20 @@ public class Main {
 
         System.out.print("Veuillez Entrer USERNAME : ");
         String username = sc.next();
-        System.out.print("Tapez le mot de passe : ");
-        int password = sc.nextInt();
+        //System.out.print("Tapez le mot de passe : ");
+        //int password = sc.nextInt();
+
+        //Pour cacher le mot de passe
+        int password;
+        Console console = System.console();
+        if (console == null) {
+            System.out.print("Tapez le mot de passe : ");
+             password = sc.nextInt(); // solution de secours
+        } else {
+            char[] pwdArray = console.readPassword("Tapez le mot de passe : ");
+            password = Integer.parseInt(new String(pwdArray));
+        }
+
 
         GestionnaireRotation admin = new GestionnaireRotation(DayOfWeek.FRIDAY);
         String quitter = "n";
@@ -78,7 +91,8 @@ public class Main {
                             Agent agentConnected = new Agent(agent.getIdAgent(),agent.getNomAgent(), agent.getEmail());
 
                             System.out.println("\nBienvenue Agent " + connected.get(0).getNomAgent() + " !");
-                            agentConnected.voirTour(agentConnected.getIdAgent(),admin);
+                            agentConnected.voirTour(admin);
+                            agentConnected.rappelSiProcheTour(admin);
                             break;
                         }
                     }
@@ -102,12 +116,12 @@ public class Main {
                                     System.out.print("Entrez la date d'indisponibilité (aaaa-mm-jj) : ");
                                     String dateStr = sc.next();
                                     LocalDate indispo = LocalDate.parse(dateStr);
-                                    admin.signalerIndisponibilite(connected.get(0).getIdAgent(), indispo);
+                                    connected.get(0).signalerIndisponibilite(connected.get(0).getIdAgent(), indispo,admin);
                                     System.out.println("Indisponibilité enregistrée.");
                                     break;
 
                                 case 2:
-                                    admin.afficherDatesDeRotation();
+                                    admin.afficherHistorique();
                                     break;
                                 default:
                                     System.out.println("Choix invalide. Veuillez réessayer.");
@@ -118,8 +132,16 @@ public class Main {
                     }
                     System.out.print("Veuillez Entrer USERNAME : ");
                     username = sc.next();
-                    System.out.print("Tapez le mot de passe : ");
-                    password = sc.nextInt();
+                    //System.out.print("Tapez le mot de passe : ");
+                    //password = sc.nextInt();
+
+                    if (console == null) {
+                        System.out.print("Tapez le mot de passe : ");
+                        password = sc.nextInt(); // solution de secours
+                    } else {
+                        char[] pwdArray = console.readPassword("Tapez le mot de passe : ");
+                        password = Integer.parseInt(new String(pwdArray));
+                    }
                 }
             }
 

@@ -16,38 +16,50 @@ public class GestionRotationJour {
         this.choix();
     }
 
-    private void choix(){
-        int ch ;
-        do{
-            System.out.println("1.) Tapez 1 pour afficher les agents avec leurs jours de rotation");
-            System.out.println("2.) Tapez 2 pour changer le jour de rotation");
-            System.out.println("3.) Tapez 3 pour faire une nouvelle rotation");
-            System.out.println("4.) Tapez 4 pour ajouter les jours Férier");
-            System.out.println("5.) Tapez 0 pour retourner a l'accueil");
-            System.out.print("Fait un choix : ");
-            ch = sc.nextInt();
-        }while (ch >3);
-        switch (ch){
-            case 0:
-                System.out.println("Merci !!!");
-                break;
-            case 1:
-                this.agentJourRotation();
-                break;
-            case 2:
-                this.changerRotation();
-                break;
-            case 3:
-                this.admin.planifierRotationGlobale();
-                break;
-            case 4:
-                this.ajouterJoursFerier();
-                break;
-            default:
-                System.out.println("Choix invalide . Fait un bon choix");
-        }
+    private void choix() {
+        int ch = -1;
+        while (ch != 0) {
+            System.out.println("\n--- MENU - Gestion des rotations & jours ---");
+            System.out.println("1.) Afficher les agents avec leurs jours de rotation");
+            System.out.println("2.) Changer le jour de rotation");
+            System.out.println("3.) Planifier une nouvelle rotation");
+            System.out.println("4.) Ajouter un jour férié");
+            System.out.println("5.) Afficher les jours fériés");
+            System.out.println("0.) Retour à l'accueil");
+            System.out.print("Faites un choix : ");
 
+            while (!sc.hasNextInt()) {
+                System.out.print(" Entrée invalide. Entrez un nombre : ");
+                sc.next();  // nettoyer mauvaise saisie
+            }
+            ch = sc.nextInt();
+
+            switch (ch) {
+                case 1:
+                    this.agentJourRotation();
+                    break;
+                case 2:
+                    this.changerRotation();
+                    break;
+                case 3:
+                    admin.planifierRotationGlobale();
+                    break;
+                case 4:
+                    this.ajouterJoursFerier();
+                    break;
+                case 5:
+                    admin.afficherJoursFeries();
+                    this.menu();
+                    break;
+                case 0:
+                    System.out.println(" Retour à l'accueil...");
+                    break;
+                default:
+                    System.out.println(" Choix invalide. Veuillez réessayer.");
+            }
+        }
     }
+
     private void menu(){
         int ch ;
         do{
